@@ -1,0 +1,945 @@
+<?xml version="1.10" ?>
+<sdf version="1.6">
+  <world name="default">
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    
+    <gui fullscreen="0">
+      <!-- 3D scene -->
+      <plugin filename="MinimalScene" name="3D View">
+        <engine>ogre2</engine>
+        <scene>scene</scene>
+        <ambient_light>0.4 0.4 0.4</ambient_light>
+        <background_color>0.8 0.8 0.8</background_color>
+        <camera_pose>-6 0 6 0 0.5 0</camera_pose>
+      </plugin>
+
+      <!-- Plugins that add functionality to the scene -->
+      <plugin filename="EntityContextMenuPlugin" name="Entity context menu">
+        <gz-gui>
+          <property key="state" type="string">floating</property>
+          <property key="width" type="double">5</property>
+          <property key="height" type="double">5</property>
+          <property key="showTitleBar" type="bool">false</property>
+        </gz-gui>
+      </plugin>
+      <plugin filename="GzSceneManager" name="Scene Manager">
+        <gz-gui>
+          <property key="resizable" type="bool">false</property>
+          <property key="width" type="double">5</property>
+          <property key="height" type="double">5</property>
+          <property key="state" type="string">floating</property>
+          <property key="showTitleBar" type="bool">false</property>
+        </gz-gui>
+      </plugin>
+      <plugin filename="InteractiveViewControl" name="Interactive view control">
+        <gz-gui>
+          <property key="resizable" type="bool">false</property>
+          <property key="width" type="double">5</property>
+          <property key="height" type="double">5</property>
+          <property key="state" type="string">floating</property>
+          <property key="showTitleBar" type="bool">false</property>
+        </gz-gui>
+      </plugin>
+      <plugin filename="CameraTracking" name="Camera Tracking">
+        <gz-gui>
+          <property key="resizable" type="bool">false</property>
+          <property key="width" type="double">5</property>
+          <property key="height" type="double">5</property>
+          <property key="state" type="string">floating</property>
+          <property key="showTitleBar" type="bool">false</property>
+        </gz-gui>
+      </plugin>
+      <!-- World control -->
+      <plugin filename="WorldControl" name="World control">
+        <gz-gui>
+          <title>World control</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="bool" key="resizable">false</property>
+          <property type="double" key="height">72</property>
+          <property type="double" key="z">1</property>
+
+          <property type="string" key="state">floating</property>
+          <anchors target="3D View">
+            <line own="left" target="left"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </gz-gui>
+
+        <play_pause>true</play_pause>
+        <step>true</step>
+        <start_paused>true</start_paused>
+        <use_event>true</use_event>
+
+      </plugin>
+
+      <!-- World statistics -->
+      <plugin filename="WorldStats" name="World stats">
+        <gz-gui>
+          <title>World stats</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="bool" key="resizable">false</property>
+          <property type="double" key="height">110</property>
+          <property type="double" key="width">290</property>
+          <property type="double" key="z">1</property>
+
+          <property type="string" key="state">floating</property>
+          <anchors target="3D View">
+            <line own="right" target="right"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </gz-gui>
+
+        <sim_time>true</sim_time>
+        <real_time>true</real_time>
+        <real_time_factor>true</real_time_factor>
+        <iterations>true</iterations>
+      </plugin>
+
+      <plugin filename="ImageDisplay" name="Image Display">
+        <gz-gui>
+          <property key="state" type="string">docked</property>
+        </gz-gui>
+        <topic>ptzCam1/camera_x1</topic>
+      </plugin>
+
+      <plugin filename="ImageDisplay" name="Image Display">
+        <gz-gui>
+          <property key="state" type="string">docked</property>
+        </gz-gui>
+        <topic>ptzCam2/camera_x1</topic>
+      </plugin>
+
+      <!-- Inspector -->
+      <!-- <plugin filename="ComponentInspector" name="Component inspector">
+        <gz-gui>
+          <property type="string" key="state">docked</property>
+        </gz-gui>
+      </plugin> -->
+
+      <!-- Entity tree -->
+      <!-- <plugin filename="EntityTree" name="Entity tree">
+        <gz-gui>
+          <property type="string" key="state">docked</property>
+        </gz-gui>
+      </plugin> -->
+    </gui>
+
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1000 1000</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>30 30</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="building">
+      <pose>0 -5 0.5 0 0 0</pose>
+      <link name="building">
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1.0</mass>
+        </inertial>
+        <collision name="building_collision">
+          <geometry>
+            <box>
+              <size>5 15 0.75</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="building_visual">
+          <geometry>
+            <box>
+              <size>10 20 0.75</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>1 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall1">
+      <pose>-15.5 0 1 0 0 0</pose>
+      <link name="building">
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1000.0</mass>
+        </inertial>
+        <collision name="building_collision">
+          <geometry>
+            <box>
+              <size>1 32 3</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="building_visual">
+          <geometry>
+            <box>
+              <size>1 32 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall2">
+      <pose>15.5 0 1 0 0 0</pose>
+      <link name="building">
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1000.0</mass>
+        </inertial>
+        <collision name="building_collision">
+          <geometry>
+            <box>
+              <size>1 32 3</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="building_visual">
+          <geometry>
+            <box>
+              <size>1 32 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall3">
+      <pose>0 15.5 1 0 0 0</pose>
+      <link name="building">
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1000.0</mass>
+        </inertial>
+        <collision name="building_collision">
+          <geometry>
+            <box>
+              <size>30 1 3</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="building_visual">
+          <geometry>
+            <box>
+              <size>30 1 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall4">
+      <pose>0 -15.5 1 0 0 0</pose>
+      <link name="building">
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1000.0</mass>
+        </inertial>
+        <collision name="building_collision">
+          <geometry>
+            <box>
+              <size>30 1 3</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="building_visual">
+          <geometry>
+            <box>
+              <size>30 1 3</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ptzCam1">
+      <!-- <pose>-5 5 0 0 1.57 0</pose> -->
+      <pose>-5 5 0 0 1.57 0</pose>
+      <link name="base_link">
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <inertial>
+          <inertia>
+            <ixx>2.501</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>2.501</iyy>
+            <iyz>0</iyz>
+            <izz>5</izz>
+          </inertia>
+          <mass>120.0</mass>
+        </inertial>
+        <visual name="base_visual">
+          <pose>-.5 0.0 0.0 0 -1.57 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.05</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="base_collision">
+          <pose>0.0 0.0 0.0 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.05</radius>
+              <length>0.1</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+      <link name="camera">
+        <pose>-1.01 0.0 0.0 0 -1.57 0</pose>
+        <inertial>
+          <inertia>
+            <ixx>0.032</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.032</iyy>
+            <iyz>0</iyz>
+            <izz>0.00012</izz>
+          </inertia>
+          <mass>0.6</mass>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.1</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.25 0.1 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <sensor name="camera_zoomx1" type="camera">
+          <camera>
+            <horizontal_fov>0.523599</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+          <topic>ptzCam1/camera_x1</topic>
+        </sensor>
+      </link>
+      <link name="intermediate">
+        <pose>-1.01 0.0 0.0 0 -1.57 0</pose>
+        <inertial>
+          <inertia>
+            <ixx>0.032</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.032</iyy>
+            <iyz>0</iyz>
+            <izz>0.00012</izz>
+          </inertia>
+          <mass>0.6</mass>
+        </inertial>
+      </link>
+      <joint name="world_fixed" type="fixed">
+        <parent>world</parent>
+        <child>base_link</child>
+      </joint>
+
+      <joint name="pan" type="revolute">
+        <parent>base_link</parent>
+        <child>intermediate</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <damping>1</damping>
+          </dynamics>
+        </axis>
+      </joint>
+      <plugin
+        filename="gz-sim-joint-position-controller-system"
+        name="gz::sim::systems::JointPositionController">
+        <joint_name>pan</joint_name>
+        <topic>/cam1/pan_cmd</topic>
+        <p_gain>1</p_gain>
+        <i_gain>0.1</i_gain>
+        <d_gain>0.01</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>1000</cmd_max>
+        <cmd_min>-1000</cmd_min>
+      </plugin>
+
+      <joint name="tilt" type="revolute">
+        <parent>intermediate</parent>
+        <child>camera</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <damping>1</damping>
+          </dynamics>
+        </axis>  
+      </joint>
+
+      <plugin
+          filename="gz-sim-joint-controller-system"
+          name="gz::sim::systems::JointController">
+        <joint_name>pan</joint_name>
+        <use_actuator_msg>true</use_actuator_msg>
+        <actuator_number>0</actuator_number>
+        <actuator_number>1</actuator_number>
+      </plugin>
+
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <joint_name>pan</joint_name>
+      </plugin>
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <joint_name>pan</joint_name>
+        <topic>cam1/pan</topic>
+      </plugin>
+    </model>
+
+    <model name="ptzCam2">
+      <!-- <pose>-5 5 0 0 1.57 0</pose> -->
+      <pose>5 5 0 0 1.57 1.2</pose>
+      <link name="base_link">
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <inertial>
+          <inertia>
+            <ixx>2.501</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>2.501</iyy>
+            <iyz>0</iyz>
+            <izz>5</izz>
+          </inertia>
+          <mass>120.0</mass>
+        </inertial>
+        <visual name="base_visual">
+          <pose>-.5 0.0 0.0 0 -1.57 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.05</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="base_collision">
+          <pose>0.0 0.0 0.0 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.05</radius>
+              <length>0.1</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+      <link name="camera">
+        <pose>-1.01 0.0 0.0 0 -1.57 0</pose>
+        <inertial>
+          <inertia>
+            <ixx>0.032</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.032</iyy>
+            <iyz>0</iyz>
+            <izz>0.00012</izz>
+          </inertia>
+          <mass>0.6</mass>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.1</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+          </material>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.25 0.1 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <sensor name="camera_zoomx1" type="camera">
+          <camera>
+            <horizontal_fov>0.523599</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+          <topic>ptzCam2/camera_x1</topic>
+        </sensor>
+      </link>
+      <link name="intermediate">
+        <pose>-1.01 0.0 0.0 0 -1.57 0</pose>
+        <inertial>
+          <inertia>
+            <ixx>0.032</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.032</iyy>
+            <iyz>0</iyz>
+            <izz>0.00012</izz>
+          </inertia>
+          <mass>0.6</mass>
+        </inertial>
+      </link>
+      <joint name="world_fixed" type="fixed">
+        <parent>world</parent>
+        <child>base_link</child>
+      </joint>
+
+      <joint name="pan" type="revolute">
+        <parent>base_link</parent>
+        <child>intermediate</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <damping>1</damping>
+          </dynamics>
+        </axis>
+      </joint>
+      <plugin
+        filename="gz-sim-joint-position-controller-system"
+        name="gz::sim::systems::JointPositionController">
+        <joint_name>pan</joint_name>
+        <topic>/cam2/pan_cmd</topic>
+        <p_gain>1</p_gain>
+        <i_gain>0.1</i_gain>
+        <d_gain>0.01</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>1000</cmd_max>
+        <cmd_min>-1000</cmd_min>
+      </plugin>
+
+      <joint name="tilt" type="revolute">
+        <parent>intermediate</parent>
+        <child>camera</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <dynamics>
+            <damping>1</damping>
+          </dynamics>
+        </axis>  
+      </joint>
+
+      <plugin
+          filename="gz-sim-joint-controller-system"
+          name="gz::sim::systems::JointController">
+        <joint_name>pan</joint_name>
+        <use_actuator_msg>true</use_actuator_msg>
+        <actuator_number>0</actuator_number>
+        <actuator_number>1</actuator_number>
+      </plugin>
+
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <joint_name>pan</joint_name>
+      </plugin>
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <joint_name>pan</joint_name>
+        <topic>cam2/pan</topic>
+      </plugin>
+    </model>
+
+    <!-- implemented from the open-source gazebo tutorial -->
+    <model name='target' canonical_link='chassis'>
+      <pose relative_to='world'>-12.5 -12.5 0 0 0 1.57</pose>   <!--the pose is relative to the world by default-->
+
+      <link name='chassis'>
+          <pose relative_to='__model__'>0.5 0 0.4 0 0 0</pose>
+          <inertial> <!--inertial properties of the link mass, inertia matix-->
+              <mass>1.14395</mass>
+              <inertia>
+                  <ixx>0.126164</ixx>
+                  <ixy>0</ixy>
+                  <ixz>0</ixz>
+                  <iyy>0.416519</iyy>
+                  <iyz>0</iyz>
+                  <izz>0.481014</izz>
+              </inertia>
+          </inertial>
+          <visual name='visual'>
+              <geometry>
+                  <box>
+                      <size>1.0 0.5 0.5</size> <!--question: this size is in meter-->
+                  </box>
+              </geometry>
+              <!--let's add color to our link-->
+              <material>
+                  <ambient>0.0 0.0 1.0 1</ambient>
+                  <diffuse>0.0 0.0 1.0 1</diffuse>
+                  <specular>0.0 0.0 1.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'> <!--todo: describe why we need the collision-->
+              <geometry>
+                  <box>
+                      <size>1.0 0.5 0.5</size>
+                  </box>
+              </geometry>
+          </collision>
+      </link>
+
+      <!--let's build the left wheel-->
+      <link name='left_wheel'>
+          <pose relative_to="chassis">-0.25 0.4 0 -1.5707 0 0</pose> <!--angles are in radian-->
+          <inertial>
+              <mass>2</mass>
+              <inertia>
+                  <ixx>0.145833</ixx>
+                  <ixy>0</ixy>
+                  <ixz>0</ixz>
+                  <iyy>0.145833</iyy>
+                  <iyz>0</iyz>
+                  <izz>0.125</izz>
+              </inertia>
+          </inertial>
+          <visual name='visual'>
+              <geometry>
+                  <cylinder>
+                      <radius>0.4</radius>
+                      <length>0.2</length>
+                  </cylinder>
+              </geometry>
+              <material>
+                  <ambient>1.0 0.0 0.0 1</ambient>
+                  <diffuse>1.0 0.0 0.0 1</diffuse>
+                  <specular>1.0 0.0 0.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'>
+              <geometry>
+                  <cylinder>
+                      <radius>0.4</radius>
+                      <length>0.2</length>
+                  </cylinder>
+              </geometry>
+          </collision>
+      </link>
+
+      <!--copy and paste for right wheel but change position-->
+      <link name='right_wheel'>
+          <pose relative_to="chassis">-0.25 -0.4 0 -1.5707 0 0</pose> <!--angles are in radian-->
+          <inertial>
+              <mass>1</mass>
+              <inertia>
+                  <ixx>0.145833</ixx>
+                  <ixy>0</ixy>
+                  <ixz>0</ixz>
+                  <iyy>0.145833</iyy>
+                  <iyz>0</iyz>
+                  <izz>0.125</izz>
+              </inertia>
+          </inertial>
+          <visual name='visual'>
+              <geometry>
+                  <cylinder>
+                      <radius>0.4</radius>
+                      <length>0.2</length>
+                  </cylinder>
+              </geometry>
+              <material>
+                  <ambient>1.0 0.0 0.0 1</ambient>
+                  <diffuse>1.0 0.0 0.0 1</diffuse>
+                  <specular>1.0 0.0 0.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'>
+              <geometry>
+                  <cylinder>
+                      <radius>0.4</radius>
+                      <length>0.2</length>
+                  </cylinder>
+              </geometry>
+          </collision>
+      </link>
+
+      <frame name="caster_frame" attached_to='chassis'>
+          <pose>0.5 0 -0.2 0 0 0</pose>
+      </frame>
+
+      <!--caster wheel-->
+      <link name='caster'>
+          <pose relative_to='caster_frame'/>
+          <inertial>
+              <mass>1</mass>
+              <inertia>
+                  <ixx>0.1</ixx>
+                  <ixy>0</ixy>
+                  <ixz>0</ixz>
+                  <iyy>0.1</iyy>
+                  <iyz>0</iyz>
+                  <izz>0.1</izz>
+              </inertia>
+          </inertial>
+          <visual name='visual'>
+              <geometry>
+                  <sphere>
+                      <radius>0.2</radius>
+                  </sphere>
+              </geometry>
+              <material>
+                  <ambient>0.0 1 0.0 1</ambient>
+                  <diffuse>0.0 1 0.0 1</diffuse>
+                  <specular>0.0 1 0.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'>
+              <geometry>
+                  <sphere>
+                      <radius>0.2</radius>
+                  </sphere>
+              </geometry>
+          </collision>
+      </link>
+
+
+      <!--connecting these links together using joints-->
+      <joint name='left_wheel_joint' type='revolute'> <!--continous joint is not supported yet-->
+          <pose relative_to='left_wheel'/>
+          <parent>chassis</parent>
+          <child>left_wheel</child>
+          <axis>
+              <xyz expressed_in='__model__'>0 1 0</xyz> <!--can be defined as any frame or even arbitrary frames-->
+              <limit>
+                  <lower>-1.79769e+308</lower>    <!--negative infinity-->
+                  <upper>1.79769e+308</upper>     <!--positive infinity-->
+              </limit>
+          </axis>
+      </joint>
+
+      <joint name='right_wheel_joint' type='revolute'>
+          <pose relative_to='right_wheel'/>
+          <parent>chassis</parent>
+          <child>right_wheel</child>
+          <axis>
+              <xyz expressed_in='__model__'>0 1 0</xyz>
+              <limit>
+                  <lower>-1.79769e+308</lower>    <!--negative infinity-->
+                  <upper>1.79769e+308</upper>     <!--positive infinity-->
+              </limit>
+          </axis>
+      </joint>
+
+      <!--different type of joints ball joint--> <!--defult value is the child-->
+      <joint name='caster_wheel' type='ball'>
+          <parent>chassis</parent>
+          <child>caster</child>
+      </joint>
+
+      <!--diff drive plugin-->
+      <plugin
+          filename="gz-sim-diff-drive-system"
+          name="gz::sim::systems::DiffDrive">
+          <left_joint>left_wheel_joint</left_joint>
+          <right_joint>right_wheel_joint</right_joint>
+          <wheel_separation>1.2</wheel_separation>
+          <wheel_radius>0.4</wheel_radius>
+          <odom_publish_frequency>1</odom_publish_frequency>
+          <topic>cmd_vel</topic>
+      </plugin>
+      <plugin
+        filename="gz-sim-pose-publisher-system"
+        name="gz::sim::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose>
+        <publish_collision_pose>false</publish_collision_pose>
+        <publish_visual_pose>false</publish_visual_pose>
+        <publish_nested_model_pose>true</publish_nested_model_pose>
+      </plugin>
+  </model>
+
+  <!-- Moving Left-->
+  <plugin filename="gz-sim-triggered-publisher-system"
+          name="gz::sim::systems::TriggeredPublisher">
+      <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777234</match>
+      </input>
+      <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0.0}, angular: {z: 0.5}
+      </output>
+  </plugin>
+  <!-- Moving Forward-->
+  <plugin filename="gz-sim-triggered-publisher-system"
+          name="gz::sim::systems::TriggeredPublisher">
+      <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777235</match>
+      </input>
+      <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0.5}, angular: {z: 0.0}
+      </output>
+  </plugin>
+  <!-- Moving Right-->
+  <plugin filename="gz-sim-triggered-publisher-system"
+          name="gz::sim::systems::TriggeredPublisher">
+      <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777236</match>
+      </input>
+      <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0.0}, angular: {z: -0.5}
+      </output>
+  </plugin>
+  <!-- Moving Backward-->
+  <plugin filename="gz-sim-triggered-publisher-system"
+          name="gz::sim::systems::TriggeredPublisher">
+      <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777237</match>
+      </input>
+      <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: -0.5}, angular: {z: 0.0}
+      </output>
+  </plugin>
+
+
+
+  </world>
+</sdf>
