@@ -7,6 +7,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Pose
 from std_msgs.msg import Float64
 from rclpy.parameter import Parameter
+import time
 
 # TODO
 # Fix pan/cmd to rotate between 90 to -90, starting at 180, 
@@ -16,6 +17,14 @@ class PubSubNode(Node):
         super().__init__("pub_sub")
         self.cmd_pub_ = self.create_publisher(Float64, "/cam1/pan_cmd", 10)
         self.target_pose_sub_ = self.create_subscription(Pose, "/model/target/pose", self.target_pose_callback, 10)
+        self.start_time = time.time()
+
+    def ptz_camera_movement(self):
+        # Start at Initial Angle
+        panAng_init = np.pi
+
+        # For cam1, this moves between 90 to -90
+        
         
     def target_pose_callback(self, pose: Pose):
         # Target Position from Callback
